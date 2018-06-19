@@ -7,14 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" 
         Height="400" 
-        Width="600"
-        >
+        Width="600">
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" CanExecute="Open_CanExecute" Executed="Open_Executed" />
         <CommandBinding Command="MediaCommands.Play" CanExecute="Play_CanExecute" Executed="Play_Executed" />
         <CommandBinding Command="MediaCommands.Pause" CanExecute="Pause_CanExecute" Executed="Pause_Executed" />
-        <CommandBinding Command="MediaCommands.Stop" CanExecute="Stop_CanExecute" Executed="Stop_Executed" />
     </Window.CommandBindings>
+    
     <Grid Name="LayoutRoot">
         <Grid x:Name="Overlay" Panel.ZIndex="1000" Visibility="Visible" >
             <Grid.Background>
@@ -40,14 +39,14 @@
 
 
             <StatusBar Grid.Column="0" Grid.Row="2" Background="Transparent" HorizontalAlignment="Left">
-                <Button Command="ApplicationCommands.Open" MaxHeight="20" Background="Transparent">
+                <Button Command="{Binding OpenFileCommand}" MaxHeight="20" Background="Transparent">
                     <Image Source="/AV Player;component/Images/folder.png"  />
                 </Button>
                 <TextBlock Name="lblProgressStatus" Background="Transparent">00:00:00</TextBlock>
             </StatusBar>
 
             <StatusBar Grid.Column="1" Grid.Row="2" MaxHeight="20" Background="Transparent" HorizontalAlignment="Center">
-                <Button Command="MediaCommands.Play">
+                <Button Command="MediaCommands.Play" Background="Transparent" >
                     <Image Source="/AV Player;component/Images/play.png" />
                 </Button>
                 <Button Command="MediaCommands.Pause">
@@ -59,10 +58,10 @@
             </StatusBar>
         </Grid>
 
-        <ContentControl x:Name="MainContent" >
+        <ContentControl Name="mainContent" Content="{Binding MediaElementObject}" />
 
-            <MediaElement  Name="mediaPlayer" LoadedBehavior="Manual" />
-        </ContentControl>
 
+
+        <MediaElement  Name="mediaPlayer"  LoadedBehavior="Manual" />
     </Grid>
 </Window>

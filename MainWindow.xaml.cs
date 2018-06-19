@@ -34,6 +34,10 @@ namespace AV_Player
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += timer_Tick;
             timer.Start();
+
+            MainWindowViewModel vm = new MainWindowViewModel();
+            this.DataContext = vm;
+            vm.OpenFileEvent += Open;
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -61,7 +65,15 @@ namespace AV_Player
                 mediaPlayer.Play();
             }
         }
-
+        private void Open(object sender, EventArgs e){
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Media files (*.mp3;*.mpg;*.mpeg)|*.mp3;*.mpg;*.mpeg|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                mediaPlayer.Source = new Uri(openFileDialog.FileName);
+                mediaPlayer.Play();
+            }
+        }
         private void Play_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = (mediaPlayer != null) && (mediaPlayer.Source != null);
@@ -83,16 +95,6 @@ namespace AV_Player
             mediaPlayer.Pause();
         }
 
-        private void Stop_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = mediaPlayerIsPlaying;
-        }
-
-        private void Stop_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            mediaPlayer.Stop();
-            mediaPlayerIsPlaying = false;
-        }
 
         private void sliProgress_DragStarted(object sender, DragStartedEventArgs e)
         {
