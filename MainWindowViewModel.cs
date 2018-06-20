@@ -15,9 +15,7 @@ namespace AV_Player
     {
         public MainWindowViewModel()
         {
-            MediaElementObject = new MediaElement();
-            MediaElementObject.LoadedBehavior = MediaState.Manual;
-            OpenFileCommand = new RelayCommand(OpenFile);
+            OpenSettingsWindowCommand = new RelayCommand(OpenSettingsWindow);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -29,27 +27,17 @@ namespace AV_Player
             }
         }
 
-        private MediaElement _mediaElementObject;
-
-        public MediaElement MediaElementObject
+        private ICommand _openSettingsWindowCommand;
+        public ICommand OpenSettingsWindowCommand
         {
-            get { return _mediaElementObject; }
-            set { _mediaElementObject = value;
-                NotifyPropertyChanged(); }
+            get { return _openSettingsWindowCommand; }
+            set { _openSettingsWindowCommand = value; }
         }
 
-        private ICommand _openFileCommand;
-        public ICommand OpenFileCommand
+        private void OpenSettingsWindow(object obj)
         {
-            get { return _openFileCommand; }
-            set { _openFileCommand = value; }
-        }
-
-        public event EventHandler OpenFileEvent;
-        private void OpenFile(object obj)
-        {
-            if (OpenFileEvent != null)
-                OpenFileEvent(this, EventArgs.Empty);
+            SettingsWindow sw = new SettingsWindow();
+            sw.Show();
         }
     }
 }

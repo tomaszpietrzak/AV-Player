@@ -29,87 +29,106 @@ namespace AV_Player
         public MainWindow()
         {
             InitializeComponent();
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += timer_Tick;
-            timer.Start();
-
+            
             MainWindowViewModel vm = new MainWindowViewModel();
             this.DataContext = vm;
-            vm.OpenFileEvent += Open;
+            
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            if ((mediaPlayer.Source != null) && (mediaPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
-            {
-                sliProgress.Minimum = 0;
-                sliProgress.Maximum = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
-                sliProgress.Value = mediaPlayer.Position.TotalSeconds;
-            }
-        }
-
-        private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
+        
+        private void OnMouseDownOpenFile(object sender, RoutedEventArgs args){
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Media files (*.mp3;*.mpg;*.mpeg)|*.mp3;*.mpg;*.mpeg|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
                 mediaPlayer.Source = new Uri(openFileDialog.FileName);
                 mediaPlayer.Play();
+
+                mediaName.Text= System.IO.Path.GetFileName(openFileDialog.FileName);
             }
-        }
-        private void Open(object sender, EventArgs e){
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Media files (*.mp3;*.mpg;*.mpeg)|*.mp3;*.mpg;*.mpeg|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                mediaPlayer.Source = new Uri(openFileDialog.FileName);
-                mediaPlayer.Play();
-            }
-        }
-        private void Play_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = (mediaPlayer != null) && (mediaPlayer.Source != null);
         }
 
-        private void Play_Executed(object sender, ExecutedRoutedEventArgs e)
+        // Play the media.
+        private void OnMouseDownPlayMedia(object sender, RoutedEventArgs args)
         {
+            // The Play method will begin the media if it is not currently active or 
+            // resume media if it is paused. This has no effect if the media is
+            // already running.
             mediaPlayer.Play();
-            mediaPlayerIsPlaying = true;
         }
 
-        private void Pause_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        // Pause the media.
+        void OnMouseDownPauseMedia(object sender, RoutedEventArgs args)
         {
-            e.CanExecute = mediaPlayerIsPlaying;
-        }
-
-        private void Pause_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
+            // The Pause method pauses the media if it is currently running.
+            // The Play method can be used to resume.
             mediaPlayer.Pause();
         }
 
+        // Switch window size
+        void OnMouseDownSwitchSize(object sender, RoutedEventArgs args)
+        {
+            if (WindowState == System.Windows.WindowState.Normal)
+            {
+                WindowState = System.Windows.WindowState.Maximized;
+            }else
+            {
+                WindowState = System.Windows.WindowState.Normal;
+            }
+        }
 
-        private void sliProgress_DragStarted(object sender, DragStartedEventArgs e)
+        // Close window
+        void OnMouseDownCloseWindow(object sender, RoutedEventArgs args)
+        {
+            //this.Close();
+            Application.Current.Windows[0].Close();
+        }
+
+        // Minimize window
+        void OnMouseDownMinimizeWindow(object sender, RoutedEventArgs args)
+        {
+            WindowState = System.Windows.WindowState.Minimized;
+        }
+
+        // Jump to different parts of the media (seek to). 
+        private void SeekToMediaPosition(object sender, RoutedPropertyChangedEventArgs<double> args)
+        {
+            //int SliderValue = (int)timelineSlider.Value;
+
+            //// Overloaded constructor takes the arguments days, hours, minutes, seconds, miniseconds.
+            //// Create a TimeSpan with miliseconds equal to the slider value.
+            //TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
+            //mediaPlayer.Position = ts;
+            ProgressStatus.Text = TimeSpan.FromSeconds(timelineSlider.Value).ToString(@"hh\:mm\:ss");
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if ((mediaPlayer.Source != null) && (mediaPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
+            {
+                timelineSlider.Minimum = 0;
+                timelineSlider.Maximum = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+                timelineSlider.Value = mediaPlayer.Position.TotalSeconds;
+            }
+        }
+
+        private void TimelineSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ProgressStatus.Text = TimeSpan.FromSeconds(timelineSlider.Value).ToString(@"hh\:mm\:ss");
+        }
+
+        private void TimelineSliderDragStarted(object sender, DragStartedEventArgs e)
         {
             userIsDraggingSlider = true;
         }
 
-        private void sliProgress_DragCompleted(object sender, DragCompletedEventArgs e)
+        private void TimelineSliderDragCompleted(object sender, DragCompletedEventArgs e)
         {
             userIsDraggingSlider = false;
-            mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
-        }
-
-        private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
+            mediaPlayer.Position = TimeSpan.FromSeconds(timelineSlider.Value);
         }
 
         private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -117,5 +136,14 @@ namespace AV_Player
             mediaPlayer.Volume += (e.Delta > 0) ? 0.1 : -0.1;
         }
 
+        private void TriggerMoveWindow(object sender, MouseButtonEventArgs e)
+        {
+            {
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    DragMove();
+                }
+            }
+        }
     }
 }
