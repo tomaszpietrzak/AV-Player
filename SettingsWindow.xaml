@@ -12,7 +12,17 @@
                 <Label Content="Content goes here..." />
             </TabItem>
             <TabItem Header="Language" />
-            <TabItem Header="Skins" />
+            <TabItem Header="Skins" >
+                <StackPanel Orientation="Vertical">
+                    <ComboBox  Height="23" 
+                             Name="cmbStyle" 
+                             VerticalAlignment="Top" 
+                             HorizontalAlignment="Left" 
+                             Width="120" 
+                             DisplayMemberPath="ThemeName"
+                             SelectionChanged="cmbStyle_SelectionChanged"/>
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

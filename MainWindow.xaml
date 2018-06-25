@@ -3,14 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:p="clr-namespace:AV_Player.Properties"
         xmlns:local="clr-namespace:AV_Player"
         mc:Ignorable="d"
         Name="PlayerWindow"
-        Height="400" 
-        Width="800"
+        Height="300"
+        Width="600"
+        MinHeight="200"
+        MinWidth="400"
         WindowStyle="None"
         MouseDown ="TriggerMoveWindow" 
         MouseDoubleClick="OnMouseDownSwitchSize">
+    <Window.InputBindings>
+        <KeyBinding Key="{Binding Source={x:Static p:Settings.Default}, Path=LeftKey}"
+                    Command="{Binding RewindMediaCommand}" 
+                    CommandParameter="{Binding ElementName=MediaPlayer}"/>
+    </Window.InputBindings>
     <Grid Name="LayoutRoot">
         <Grid x:Name="Overlay" 
               Panel.ZIndex="1000" 
@@ -36,17 +45,18 @@
                     <StatusBar Style="{DynamicResource StatusBarStyle}"
                                Grid.Column="0"
                                HorizontalAlignment="Left">
-                        <TextBlock Name="mediaName" />
+                        <TextBlock  Name="MediaName" 
+                                    Text="{Binding MediaFile}"/>
                     </StatusBar>
                     <StatusBar Style="{DynamicResource StatusBarStyle}"
                                Grid.Column="1"
                                HorizontalAlignment="Right">
                         <Button Click="OnMouseDownMinimizeWindow"
-                                 Style="{DynamicResource ButtonStyle2}">
+                                 Style="{DynamicResource ButtonStyle}">
                             <Image Source="/AV Player;component/Images/minimize-tab.png" />
                         </Button>
                         <Button Click="OnMouseDownCloseWindow"
-                                 Style="{DynamicResource ButtonStyle2}">
+                                 Style="{DynamicResource ButtonStyle}">
                             <Image Source="/AV Player;component/Images/cancel.png" />
                         </Button>
                     </StatusBar>
@@ -72,7 +82,7 @@
                            Grid.ColumnSpan="3"  
                            Background="Transparent">
                         <StatusBarItem  HorizontalContentAlignment="Stretch">
-                            <Slider Name="timelineSlider" 
+                            <Slider Name="TimelineSlider" 
                                 ValueChanged="TimelineSliderValueChanged" 
                                 Thumb.DragStarted="TimelineSliderDragStarted"  
                                 Thumb.DragCompleted="TimelineSliderDragCompleted"/>
@@ -85,16 +95,22 @@
                                Grid.Row="4" 
                                HorizontalAlignment="Left"
                                Style="{DynamicResource StatusBarStyle}">
-                        <Button Click="OnMouseDownOpenFile" 
-                                Style="{DynamicResource ButtonStyle2}">
+                        <Button Style="{DynamicResource ButtonStyle}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <i:InvokeCommandAction Command="{Binding OpenFileCommand}" 
+                                                           CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                             <Image Source="/AV Player;component/Images/folder.png"/>
                         </Button>
                         <Button Command="{Binding OpenSettingsWindowCommand}"
-                                Style="{DynamicResource ButtonStyle2}">
+                                Style="{DynamicResource ButtonStyle}">
                             <Image Source="/AV Player;component/Images/settings.png"/>
                         </Button>
                         <TextBlock Name="ProgressStatus" 
-                                   Background="Transparent">
+                                   Background="Transparent"
+                                   Text="{Binding TimeStamp}">
                             00:00:00
                         </TextBlock>
                     </StatusBar>
@@ -114,24 +130,42 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Button 
-                                        Style="{DynamicResource ButtonStyle2}"
+                                <Button Style="{DynamicResource ButtonStyle}"
                                         Grid.Column="0">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding RewindMediaCommand}" CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <Image Source="/AV Player;component/Images/rewind.png" />
                                 </Button>
-                                <Button Click="OnMouseDownPlayMedia"
-                                        Style="{DynamicResource ButtonStyle2}"
+                                <Button Style="{DynamicResource ButtonStyle}"
                                         Grid.Column="1">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding PlayMediaCommand}" CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <Image Source="/AV Player;component/Images/play.png" />
                                 </Button>
-                                <Button Click="OnMouseDownPauseMedia" 
-                                        Style="{DynamicResource ButtonStyle2}"
+                                <Button Style="{DynamicResource ButtonStyle}"
                                         Grid.Column="2" >
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding PauseMediaCommand}" 
+                                                                   CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <Image Source="/AV Player;component/Images/pause.png" />
                                 </Button>
-                                <Button 
-                                        Style="{DynamicResource ButtonStyle2}"
+                                <Button Style="{DynamicResource ButtonStyle}"
                                         Grid.Column="3">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding ForwardMediaCommand}" 
+                                                                   CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <Image Source="/AV Player;component/Images/fast-forward.png" />
                                 </Button>
                             </Grid>
@@ -142,23 +176,33 @@
                                Grid.Row="4"  
                                HorizontalAlignment="Right" 
                                Style="{DynamicResource StatusBarStyle}">
-                        <ProgressBar Name="mediaVolume" 
+                        <ProgressBar Name="MediaVolume" 
                                      Width="50" 
                                      Height="12" 
                                      Maximum="1" 
                                      Value="{Binding ElementName=mediaPlayer, Path=Volume}" />
                         <Button Click="OnMouseDownSwitchSize"
-                                Style="{DynamicResource ButtonStyle2}">
-                            <Image Source="/AV Player;component/Images/full-size.png" />
+                                Style="{DynamicResource ButtonStyle}">
+                            <Image Source="/AV Player;component/Images/full-size.png"/>
                         </Button>
                     </StatusBar>
                 </Grid>
             </DockPanel>
         </Grid>
 
-        <ContentControl Name="mainContent" HorizontalAlignment="Stretch">
-            <MediaElement  Name="mediaPlayer"  
-                               LoadedBehavior="Manual"/>
-        </ContentControl>
+        <Viewbox Name="MainContent" Stretch="Uniform">
+            <MediaElement Name="MediaPlayer" 
+                          Source="{Binding MediaSource}"
+                          UnloadedBehavior="Manual" 
+                          LoadedBehavior="Play"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch" 
+                          Stretch="Fill" />
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SourceUpdated">
+                    <i:InvokeCommandAction Command="{Binding LoadedMediaCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Viewbox>
     </Grid>
 </Window>
