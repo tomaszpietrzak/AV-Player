@@ -1,0 +1,30 @@
+﻿<Window x:Class="AV_Player.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AV_Player"
+        mc:Ignorable="d"
+        Title="Settings" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="General">
+                <StackPanel>
+                    <TextBox Text="{Binding LeftKey}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Language" />
+            <TabItem Header="Skins" >
+                <StackPanel Orientation="Vertical">
+                    <ComboBox  Height="23" 
+                             Name="cmbStyle" 
+                             VerticalAlignment="Top" 
+                             HorizontalAlignment="Left" 
+                             Width="120" 
+                             DisplayMemberPath="ThemeName"
+                             SelectionChanged="cmbStyle_SelectionChanged"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

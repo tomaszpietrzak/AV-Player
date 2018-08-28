@@ -13,5 +13,19 @@ namespace AV_Player
     /// </summary>
     public partial class App : Application
     {
+        void App_Startup(object sender, StartupEventArgs e)
+        {
+            // Application is running
+            // Process command line args
+
+            MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
+            if (e.Args.Length==1)
+            {
+                mainWindowViewModel.MediaSource = new Uri(e.Args[0]);
+            }
+
+            MainWindow mainWindow = new MainWindow(mainWindowViewModel);
+            mainWindow.Show();
+        }
     }
 }

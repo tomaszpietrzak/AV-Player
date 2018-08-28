@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -54,6 +55,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConstantAspectRatioWindow.xaml.cs">
+      <DependentUpon>ConstantAspectRatioWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsViewModel.cs" />
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ShiftWindowOntoScreenHelper.cs" />
+    <Page Include="ConstantAspectRatioWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -66,6 +82,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Default\Main.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -100,6 +124,25 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cancel.png" />
+    <Resource Include="Images\fast-forward.png" />
+    <Resource Include="Images\list.png" />
+    <Resource Include="Images\maximize.png" />
+    <Resource Include="Images\minimize.png" />
+    <Resource Include="Images\replay.png" />
+    <Resource Include="Images\rewind.png" />
+    <Resource Include="Images\speaker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\full-size.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\minimize-tab.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
