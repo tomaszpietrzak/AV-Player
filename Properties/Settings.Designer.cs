@@ -30,6 +30,10 @@ namespace AV_Player.Properties {
             get {
                 return ((string)(this["LeftKey"]));
             }
+            set
+            {
+                this["LeftKey"] = value;
+            }
         }
     }
 }

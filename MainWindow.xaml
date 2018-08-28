@@ -14,11 +14,12 @@
         MinWidth="400"
         WindowStyle="None"
         MouseDown ="TriggerMoveWindow" 
-        MouseDoubleClick="OnMouseDownSwitchSize">
+        MouseDoubleClick="OnSwitchSize"
+        MouseMove="HideUI">
+    
     <Window.InputBindings>
         <KeyBinding Key="{Binding Source={x:Static p:Settings.Default}, Path=LeftKey}"
-                    Command="{Binding RewindMediaCommand}" 
-                    CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                    Command="{Binding RewindMediaCommand}" />
     </Window.InputBindings>
     <Grid Name="LayoutRoot">
         <Grid x:Name="Overlay" 
@@ -36,7 +37,8 @@
 
             <DockPanel Grid.Row="0" 
                        Grid.ColumnSpan="3"
-                       Style="{DynamicResource TopDockPanelStyle}">
+                       Style="{DynamicResource TopDockPanelStyle}"
+>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -51,11 +53,11 @@
                     <StatusBar Style="{DynamicResource StatusBarStyle}"
                                Grid.Column="1"
                                HorizontalAlignment="Right">
-                        <Button Click="OnMouseDownMinimizeWindow"
+                        <Button Click="OnMinimizeWindow"
                                  Style="{DynamicResource ButtonStyle}">
                             <Image Source="/AV Player;component/Images/minimize-tab.png" />
                         </Button>
-                        <Button Click="OnMouseDownCloseWindow"
+                        <Button Click="OnCloseWindow"
                                  Style="{DynamicResource ButtonStyle}">
                             <Image Source="/AV Player;component/Images/cancel.png" />
                         </Button>
@@ -78,6 +80,19 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
+                    
+                    <StatusBar Grid.Row="0"
+                            Grid.Column="2"
+                            Background="Transparent">
+                        <StatusBarItem  HorizontalContentAlignment="Right">
+                            <Slider Name="VolumeSlider"
+                                    Value="0.5"
+                                    Maximum="1" 
+                                    Visibility="Hidden"
+                                    Width="100"/>
+                        </StatusBarItem>
+                    </StatusBar>
+                    
                     <StatusBar Grid.Row="1" 
                            Grid.ColumnSpan="3"  
                            Background="Transparent">
@@ -134,7 +149,8 @@
                                         Grid.Column="0">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <i:InvokeCommandAction Command="{Binding RewindMediaCommand}" CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                                            <i:InvokeCommandAction Command="{Binding RewindMediaCommand}" 
+                                                                   CommandParameter="{Binding ElementName=MediaPlayer}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <Image Source="/AV Player;component/Images/rewind.png" />
@@ -143,7 +159,8 @@
                                         Grid.Column="1">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <i:InvokeCommandAction Command="{Binding PlayMediaCommand}" CommandParameter="{Binding ElementName=MediaPlayer}"/>
+                                            <i:InvokeCommandAction Command="{Binding PlayMediaCommand}" 
+                                                                   CommandParameter="{Binding ElementName=MediaPlayer}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <Image Source="/AV Player;component/Images/play.png" />
@@ -176,12 +193,12 @@
                                Grid.Row="4"  
                                HorizontalAlignment="Right" 
                                Style="{DynamicResource StatusBarStyle}">
-                        <ProgressBar Name="MediaVolume" 
-                                     Width="50" 
-                                     Height="12" 
-                                     Maximum="1" 
-                                     Value="{Binding ElementName=mediaPlayer, Path=Volume}" />
-                        <Button Click="OnMouseDownSwitchSize"
+                        
+                        <Button Style="{DynamicResource ButtonStyle}"
+                                Click="OnSwitchVolumSliderVisibility">
+                            <Image Source="/AV Player;component/Images/speaker.png"/>
+                            </Button>
+                        <Button Click="OnSwitchSize"
                                 Style="{DynamicResource ButtonStyle}">
                             <Image Source="/AV Player;component/Images/full-size.png"/>
                         </Button>
@@ -190,19 +207,22 @@
             </DockPanel>
         </Grid>
 
-        <Viewbox Name="MainContent" Stretch="Uniform">
-            <MediaElement Name="MediaPlayer" 
+        <MediaElement Name="MediaPlayer" 
                           Source="{Binding MediaSource}"
                           UnloadedBehavior="Manual" 
-                          LoadedBehavior="Play"
+                          LoadedBehavior="Manual"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch" 
-                          Stretch="Fill" />
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SourceUpdated">
-                    <i:InvokeCommandAction Command="{Binding LoadedMediaCommand}"/>
+                          Stretch="Fill"
+                          Volume="{Binding ElementName=VolumeSlider, Path=Value}"
+                          Height="{Binding ElementName=PlayerWindow, Path=Height}"
+                          Width="{Binding ElementName=PlayerWindow, Path=Width}">
+            <i:Interaction.Triggers> 
+                <i:EventTrigger EventName="MediaOpened">
+                    <i:InvokeCommandAction Command="{Binding LoadedMediaCommand}"
+                                           CommandParameter="{Binding ElementName=MediaPlayer}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </Viewbox>
+        </MediaElement>
     </Grid>
 </Window>

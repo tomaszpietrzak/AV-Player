@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace AV_Player
 {
-    class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         public MainWindowViewModel()
         {
@@ -93,9 +93,14 @@ namespace AV_Player
             set { _playMediaCommand = value; }
         }
 
+        public event EventHandler PlayMediaEvent;
+
         private void PlayMedia(object obj)
         {
-            (obj as MediaElement).Play();
+            if (PlayMediaEvent != null)
+            {
+                PlayMediaEvent(obj, EventArgs.Empty);
+            }
         }
 
         private ICommand _pauseMediaCommand;
@@ -105,9 +110,15 @@ namespace AV_Player
             set { _pauseMediaCommand = value; }
         }
 
+
+        public event EventHandler PauseMediaEvent;
+
         private void PauseMedia(object obj)
         {
-            (obj as MediaElement).Pause();
+            if (PauseMediaEvent != null)
+            {
+                PauseMediaEvent(obj, EventArgs.Empty);
+            }
         }
 
         private ICommand _rewindMediaCommand;
@@ -117,9 +128,14 @@ namespace AV_Player
             set { _rewindMediaCommand = value; }
         }
 
+        public event EventHandler RewindMediaEvent;
+
         private void RewindMedia(object obj)
         {
-            (obj as MediaElement).Position = TimeSpan.FromSeconds((obj as MediaElement).Position.TotalSeconds - 10);
+            if (RewindMediaEvent != null)
+            {
+                RewindMediaEvent(obj, EventArgs.Empty);
+            }
         }
 
         private ICommand _forwardMediaCommand;
@@ -129,9 +145,14 @@ namespace AV_Player
             set { _forwardMediaCommand = value; }
         }
 
+        public event EventHandler ForwardMediaEvent;
+
         private void ForwardMedia(object obj)
         {
-            (obj as MediaElement).Position = TimeSpan.FromSeconds((obj as MediaElement).Position.TotalSeconds + 10);
+            if (ForwardMediaEvent != null)
+            {
+                ForwardMediaEvent(obj, EventArgs.Empty);
+            }
         }
 
         private ICommand _loadedMediaCommand;
@@ -141,11 +162,17 @@ namespace AV_Player
             set { _loadedMediaCommand = value; }
         }
 
+        public event EventHandler LoadedMediaEvent;
         private void LoadedMedia(object obj)
         {
             if (MediaSource != null)
             {
                 MediaFile = System.IO.Path.GetFileName(MediaSource.AbsolutePath);
+
+                if (LoadedMediaEvent != null)
+                {
+                    LoadedMediaEvent(obj, EventArgs.Empty);
+                }
             }
         } 
     }

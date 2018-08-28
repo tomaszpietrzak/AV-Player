@@ -18,14 +18,13 @@ namespace AV_Player
             // Application is running
             // Process command line args
 
-            // Create main application window, starting minimized if specified
-            MainWindow mainWindow = new MainWindow();
             MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
-            mainWindow.DataContext = mainWindowViewModel;
             if (e.Args.Length==1)
             {
                 mainWindowViewModel.MediaSource = new Uri(e.Args[0]);
             }
+
+            MainWindow mainWindow = new MainWindow(mainWindowViewModel);
             mainWindow.Show();
         }
     }
