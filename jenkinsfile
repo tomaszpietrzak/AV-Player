@@ -1,0 +1,23 @@
+node {
+
+stage 'Checkout'
+
+checkout scm
+
+
+
+stage 'Build'
+
+
+
+bat 'nuget restore AV_Player.sln'
+
+bat "\"${tool 'msbuild'}\" AV_Player.sln /p:Configuration=Debug"
+
+
+
+stage 'Run Tests'
+
+
+
+}
